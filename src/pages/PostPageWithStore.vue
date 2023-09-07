@@ -1,14 +1,14 @@
 <template>
     <div>
         <h1>Страница с постами</h1>
-        <!-- <MyInput v-focus v-model="searchQuery" placeholder="Поиск..." /> -->
+        <MyInput v-focus :model-value="searchQuery" @update:model-value="setSearchQuery" placeholder="Поиск..." />
         <div class="app__btns">
             <MyButton @click="showDialog">Создать пост</MyButton>
-            <!-- <MySelect v-model="selectedSort" :options="sortOptions"/> -->
+            <MySelect @update:model-value="setSelectedSort" :model-value="selectedSort" :options="sortOptions"/>
         </div>
-        <!-- <MyDialog v-model:show="dialogVisible">
+        <MyDialog v-model:show="dialogVisible">
             <PostForm @create="createPost"/> 
-        </MyDialog> -->
+        </MyDialog>
         <PostList @remove="removePost" :posts="sortedAndSearchedPosts" v-if="!isPostsLoading"/>
         <div v-else>Идет загрузка...</div>
         <div v-intersection="loadMorePosts" class="observer"></div>
@@ -31,7 +31,10 @@ export default {
     },
     methods: {
         ...mapMutations({
-            setPage: 'post/setPage'
+            setPage: 'post/setPage',
+            setSearchQuery: 'post/setSearchQuery',
+            setSelectedSort: 'post/setSelectedSort',
+            setPosts: 'post/setPosts'
         }),
         ...mapActions({
             fetchPosts: 'post/fetchPosts',
@@ -50,6 +53,10 @@ export default {
     },
     mounted() {
         this.fetchPosts()
+    },
+    unmounted() {
+        this.setPage(1),
+        this.setSelectedSort('')
     },
     computed: {
         ...mapState({
