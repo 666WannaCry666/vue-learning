@@ -9,6 +9,7 @@ const postModule = {
             sortOptions: [
                 {value: 'title', name: 'По названию'},
                 {value: 'body', name: 'По содержанию'},
+                {value: 'id', name: 'По номеру'},
             ],
             searchQuery: '',
             page: 1,
@@ -18,6 +19,10 @@ const postModule = {
     },
     getters: {
         sortedPosts(state) {
+            if(state.selectedSort === 'id') {
+                return [...state.posts].sort((post1, post2) => post1[state.selectedSort] - post2[state.selectedSort])
+            }
+            
             return [...state.posts].sort((post1, post2) => post1[state.selectedSort]?.localeCompare(post2[state.selectedSort]))
         },
         sortedAndSearchedPosts(state, getters) {
